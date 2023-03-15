@@ -1,17 +1,46 @@
-import { ClassSerializerInterceptor, Module } from '@nestjs/common';
-import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import {
+  ClassSerializerInterceptor,
+  Module,
+} from '@nestjs/common';
+import {
+  ConfigModule,
+  ConfigService,
+} from '@nestjs/config';
+import {
+  APP_FILTER,
+  APP_INTERCEPTOR,
+} from '@nestjs/core';
+import {
+  TypeOrmModule,
+  TypeOrmModuleOptions,
+} from '@nestjs/typeorm';
 
-import { ProductsModule } from './products/products.module';
-import { ProductsRepository } from './products/products.repository';
 import { HttpExceptionFilter } from './users/filters/http-exception-filter';
+import { User } from './users/users.entity';
 import { UsersModule } from './users/users.module';
-import { UserRepository } from './users/users.repository';
+import { UsersService } from './users/users.service';
 
 @Module({
-  imports: [UsersModule, ProductsModule],
+  imports: [
+    UsersModule,
+    ConfigModule.forRoot(),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService): Promise<TypeOrmModuleOptions> => ({
+        type: 'postgres',
+        host: configService.get<string>('POSTGRES_HOST'),
+        port: configService.get<number>('POSTGRES_PORT'),
+        database: configService.get<string>('POSTGRES_DB'),
+        username: configService.get<string>('POSTGRES_USERNAME'),
+        password: configService.get<string>('POSTGRES_PWD'),
+        entities: [User],
+        synchronize: true,
+      }),
+      inject: [ConfigService]
+    })
+  ],
   providers: [
-    UserRepository,
-    ProductsRepository,
+    UsersService,
     {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
