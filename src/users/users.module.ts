@@ -10,6 +10,6 @@ import { EmailIsUnique } from './validators/emailIsUnique.validator';
   imports: [TypeOrmModule.forFeature([User])],
   controllers: [UsersController],
   providers: [UsersService, EmailIsUnique],
-  exports: [UsersService, TypeOrmModule],
+  exports: [UsersService, TypeOrmModule]
 })
 export class UsersModule {}

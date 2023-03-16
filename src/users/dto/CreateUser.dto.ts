@@ -1,22 +1,15 @@
-import {
-  IsEmail,
-  IsUrl,
-  MaxLength,
-  MinLength,
-} from 'class-validator';
+import { IsEmail, IsUrl, MaxLength, MinLength } from 'class-validator';
 
-import {
-  EmailAlreadyExistsValidator,
-} from '../validators/emailIsUnique.validator';
+import { EmailAlreadyExistsValidator } from '../validators/emailIsUnique.validator';
 
 export class CreateUserDTO {
-  @MinLength(3, {message: "Nome precisa ter pelo menos 3 caractes"})
-  @MaxLength(60, {message: "Nome não pode ter mais de 60"})
+  @MinLength(3, { message: 'Nome precisa ter pelo menos 3 caractes' })
+  @MaxLength(60, { message: 'Nome não pode ter mais de 60' })
   name: string;
 
-  @IsEmail({}, {message: "E-mail inválido"})
+  @IsEmail({}, { message: 'E-mail inválido' })
   @EmailAlreadyExistsValidator({
-    message: "Já existe um usuário com este e-mail",
+    message: 'Já existe um usuário com este e-mail'
   })
   email: string;
 
@@ -25,5 +18,5 @@ export class CreateUserDTO {
   password: string;
 
   @IsUrl()
-  photoUrl: string
+  photoUrl: string;
 }

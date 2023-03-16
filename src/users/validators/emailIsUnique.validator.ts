@@ -2,7 +2,7 @@ import {
   registerDecorator,
   ValidationOptions,
   ValidatorConstraint,
-  ValidatorConstraintInterface,
+  ValidatorConstraintInterface
 } from 'class-validator';
 
 import { Injectable } from '@nestjs/common';
@@ -20,7 +20,7 @@ export class EmailIsUnique implements ValidatorConstraintInterface {
 }
 
 export const EmailAlreadyExistsValidator = (
-  validationOptions: ValidationOptions,
+  validationOptions: ValidationOptions
 ) => {
   return (object: object, property: string) => {
     registerDecorator({
@@ -28,7 +28,7 @@ export const EmailAlreadyExistsValidator = (
       propertyName: property,
       options: validationOptions,
       constraints: [],
-      validator: EmailIsUnique,
+      validator: EmailIsUnique
     });
   };
 };

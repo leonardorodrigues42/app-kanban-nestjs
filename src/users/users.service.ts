@@ -1,10 +1,7 @@
 import { hashSync } from 'bcrypt';
 import { Repository } from 'typeorm';
 
-import {
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { CreateUserDTO } from './dto/CreateUser.dto';
@@ -18,9 +15,9 @@ export class UsersService {
   ) {}
 
   async save(userDTO: CreateUserDTO): Promise<User> {
-    const user = this.usersRepository.create(userDTO)
-    user.password = hashSync(userDTO.password, 10)
-    await this.usersRepository.save(user)
+    const user = this.usersRepository.create(userDTO);
+    user.password = hashSync(userDTO.password, 10);
+    await this.usersRepository.save(user);
     return user;
   }
 
@@ -29,16 +26,16 @@ export class UsersService {
   }
 
   async getUser(id: string): Promise<User> {
-    console.log(id)
-    const user = await this.getUserOrFail(id['id'])
-    return user
+    const user = await this.getUserOrFail(id);
+    console.log(user);
+    return user;
   }
-  
+
   async updateUser(id: string, data: Partial<User>) {
-    await this.getUserOrFail(id)    
-    
-    const dataForUpdate = {}
-    
+    await this.getUserOrFail(id);
+
+    const dataForUpdate = {};
+
     Object.entries(data).forEach(([key, value]) => {
       if (key === 'id' || key === 'id') {
         return;
@@ -46,12 +43,12 @@ export class UsersService {
       dataForUpdate[key] = value;
     });
 
-    await this.usersRepository.update(id, dataForUpdate)
-    return dataForUpdate
+    await this.usersRepository.update(id, dataForUpdate);
+    return dataForUpdate;
   }
 
   async emailAlreadyExists(email: string) {
-    const user = await this.usersRepository.findOneBy({email});
+    const user = await this.usersRepository.findOneBy({ email });
     if (user !== null) {
       return true;
     }
@@ -60,13 +57,18 @@ export class UsersService {
   }
 
   async getUserOrFail(id: string) {
-    const user = await this.usersRepository.findOneBy({id});
-    if (user === null) {
+    const user = await this.usersRepository.findOneBy({ id });
+    if (!user) {
       throw new NotFoundException({
-        message: "O usuário não foi encontrádo"
-      })
+        message: 'O usuário não foi encontrádo'
+      });
     }
 
+    return user;
+  }
+
+  async findOneByEmail(email: string) {
+    const user = await this.usersRepository.findOneBy({ email });
     return user;
   }
 }

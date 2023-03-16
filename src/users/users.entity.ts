@@ -4,12 +4,12 @@ import {
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
+  UpdateDateColumn
 } from 'typeorm';
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
@@ -20,16 +20,16 @@ export class User {
 
   @Column()
   @Exclude({
-    toPlainOnly: true,
+    toPlainOnly: true
   })
   password: string;
 
   @Column()
-  photoUrl: string
+  photoUrl: string;
 
   @CreateDateColumn()
-  createdAt: Date
+  createdAt: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date
+  updatedAt: Date;
 }
