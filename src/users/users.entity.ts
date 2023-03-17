@@ -1,8 +1,10 @@
 import { Exclude } from 'class-transformer';
+import { Board } from 'src/board/board.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
@@ -26,6 +28,9 @@ export class User {
 
   @Column()
   photoUrl: string;
+
+  @OneToMany(() => Board, board => board.owner)
+  boards: Board[];
 
   @CreateDateColumn()
   createdAt: Date;

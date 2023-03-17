@@ -1,3 +1,5 @@
+import { AuthModule } from 'src/auth/auth.module';
+
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -7,7 +9,7 @@ import { UsersService } from './users.service';
 import { EmailIsUnique } from './validators/emailIsUnique.validator';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
+  imports: [AuthModule, TypeOrmModule.forFeature([User])],
   controllers: [UsersController],
   providers: [UsersService, EmailIsUnique],
   exports: [UsersService, TypeOrmModule]
