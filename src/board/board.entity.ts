@@ -1,12 +1,14 @@
 import { User } from 'src/users/users.entity';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   JoinTable,
   ManyToMany,
   ManyToOne,
-  PrimaryGeneratedColumn
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
 } from 'typeorm';
 
 @Entity()
@@ -20,11 +22,17 @@ export class Board {
   @Column()
   backgroundImageUrl: string;
 
-  @ManyToOne(() => User, user => user.boards, { nullable: false })
+  @ManyToOne(() => User, user => user.boards, { nullable: false, eager: true })
   @JoinColumn({ name: 'ownerId', referencedColumnName: 'id' })
   owner: User;
 
-  @ManyToMany(() => User, user => user.boards)
+  @ManyToMany(() => User, user => user.boards, { eager: true })
   @JoinTable()
   users: User[];
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

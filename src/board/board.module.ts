@@ -7,11 +7,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { BoardController } from './board.controller';
 import { Board } from './board.entity';
 import { BoardService } from './board.service';
+import { TitleIsUnique } from './validators/board-already-exists.validator';
 
 @Module({
   controllers: [BoardController],
   imports: [UserModule, TypeOrmModule.forFeature([Board]), AuthModule],
-  providers: [BoardService],
+  providers: [BoardService, TitleIsUnique],
   exports: [BoardService, TypeOrmModule]
 })
 export class BoardModule {}

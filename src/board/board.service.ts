@@ -47,21 +47,71 @@ export class BoardService {
     await this.requestUserIsOwner(userId, board);
     const aux = [];
 
-    emails.forEach(async email => {
+    for (let email of emails) {
       const user = await this.userService.findOneByEmail(email);
       if (!user) {
         aux.push(email);
+        continue;
       }
-      board.users.push(user);
-    });
+      if (board.users.some(u => u.id === user.id)) {
+        aux.push(email);
+        continue;
+      }
+      board.users = [...board.users, user];
+    }
 
+    await this.boardRepository.save(board);
     const addedUsers = emails.filter(email => !aux.includes(email));
 
-    return {
-      added: `Usuários adicionados: ${addedUsers}`,
-      noAdded: `Os usuários a seguir não foram adicionados, por que não
-        corresponderam a nenhum usuário cadastrado`
-    };
+    const dataForResponse = {};
+    if (addedUsers.length > 0) {
+      dataForResponse['added'] = `Usuários adicionados: ${addedUsers}`;
+    }
+    if (aux.length > 0) {
+      dataForResponse['noAdded'] =
+        `Os usuários a seguir não foram adicionados, por que não ` +
+        `corresponderam a nenhum usuário cadastrado ou já fazem parte ` +
+        `do quadro <${board.title}>: ${aux}`;
+    }
+    return dataForResponse;
+  }
+
+  async removeUsersOfBoard(
+    boardId: string,
+    userId: string,
+    emails: string[]
+  ): Promise<object> {
+    const board: Board = await this.getBoardOrFail(boardId);
+    await this.requestUserIsOwner(userId, board);
+    const aux = [];
+
+    for (let email of emails) {
+      const user = await this.userService.findOneByEmail(email);
+      if (!user) {
+        aux.push(email);
+        continue;
+      }
+      if (!board.users.some(u => u.id === user.id)) {
+        aux.push(email);
+        continue;
+      }
+      board.users = board.users.filter(user => user.email !== email);
+    }
+
+    await this.boardRepository.save(board);
+    const removedUsers = emails.filter(email => !aux.includes(email));
+
+    const dataForResponse = {};
+    if (removedUsers.length > 0) {
+      dataForResponse['removed'] = `Usuários removidos: ${removedUsers}`;
+    }
+    if (aux.length > 0) {
+      dataForResponse['noRemoved'] =
+        `Os usuários a seguir não foram removidos, por que não ` +
+        `corresponderam a nenhum usuário cadastrado ou não fazem parte ` +
+        `do quadro <${board.title}>: ${aux}`;
+    }
+    return dataForResponse;
   }
 
   async updateBoard(boardId: string, userId: string, data: Partial<Board>) {
@@ -81,20 +131,25 @@ export class BoardService {
     return dataForUpdate;
   }
 
-  async getBoardOrFail(boardId: string): Promise<Board> {
-    const board = await this.boardRepository.findOneBy({ id: boardId });
-    if (!board) {
-      throw new NotFoundException('Quadro não encontrado');
-    }
-    return board;
-  }
-
   async deleteBoard(boardId: string, userId: string) {
     const board = await this.getBoardOrFail(boardId);
     await this.requestUserIsOwner(userId, board);
     await this.boardRepository.delete(board);
 
     return `O quadro ${board.title} foi deletado`;
+  }
+
+  async findOneByTitle(title: string) {
+    const board = await this.boardRepository.findOneBy({ title });
+    return board;
+  }
+
+  async getBoardOrFail(id: string): Promise<Board> {
+    const board = await this.boardRepository.findOneBy({ id });
+    if (!board) {
+      throw new NotFoundException('Quadro não encontrado');
+    }
+    return board;
   }
 
   private async requestUserIsOwner(userId: string, board: Board) {

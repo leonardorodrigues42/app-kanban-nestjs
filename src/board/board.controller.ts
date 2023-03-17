@@ -12,7 +12,6 @@ import {
   UseGuards
 } from '@nestjs/common';
 
-import { Board } from './board.entity';
 import { BoardService } from './board.service';
 import { CreateBoardDTO } from './dto/CreateBoard.dto';
 
@@ -28,7 +27,7 @@ export class BoardController {
   }
 
   @Get()
-  async listBoard() {
+  async listBoards() {
     return await this.boardService.listBoards();
   }
 
@@ -38,15 +37,33 @@ export class BoardController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Patch(':id')
-  async upadateBoard(
+  @Post(':id/users')
+  async addUserInBoard(
+    @Body('emailList') emailList: string[] | string,
     @Param('id') id: string,
-    @Body() data: Partial<Board>,
+    @Request() req: any
+  ) {
+    if (Array.isArray(emailList)) {
+      return await this.boardService.addUserInBoard(id, req.user.id, [
+        ...emailList
+      ]);
+    } else {
+      return await this.boardService.addUserInBoard(id, req.user.id, [
+        emailList
+      ]);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
+  async updateBoard(
+    @Param('id') id: string,
+    @Body() data: Partial<CreateBoardDTO>,
     @Request() req: any
   ) {
     const updatedBoard = await this.boardService.updateBoard(
       id,
-      req.user.id,
+      req.user.sub,
       data
     );
     return {
@@ -59,9 +76,27 @@ export class BoardController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Patch(':id/users')
+  async removeUserOfBoard(
+    @Body('emailList') emailList: string[] | string,
+    @Param('id') id: string,
+    @Request() req: any
+  ) {
+    if (Array.isArray(emailList)) {
+      return await this.boardService.removeUsersOfBoard(id, req.user.id, [
+        ...emailList
+      ]);
+    } else {
+      return await this.boardService.removeUsersOfBoard(id, req.user.id, [
+        emailList
+      ]);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async deleteBoard(@Param('id') id: string, @Request() req: any) {
-    const response = await this.boardService.deleteBoard(id, req.user.id);
+    const response = await this.boardService.deleteBoard(id, req.user.sub);
     return {
       status: 'ok',
       message: response
