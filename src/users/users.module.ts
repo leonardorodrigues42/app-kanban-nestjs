@@ -14,4 +14,4 @@ import { EmailIsUnique } from './validators/emailIsUnique.validator';
   providers: [UsersService, EmailIsUnique],
   exports: [UsersService, TypeOrmModule]
 })
-export class UsersModule {}
+export class UserModule {}

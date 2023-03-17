@@ -23,7 +23,7 @@ import { BoardModule } from './board/board.module';
 import { BoardService } from './board/board.service';
 import { HttpExceptionFilter } from './filters/http-exception-filter';
 import { User } from './users/users.entity';
-import { UsersModule } from './users/users.module';
+import { UserModule } from './users/users.module';
 import { UsersService } from './users/users.service';
 
 @Module({
@@ -46,7 +46,7 @@ import { UsersService } from './users/users.service';
       }),
       inject: [ConfigService]
     }),
-    UsersModule,
+    UserModule,
     AuthModule,
     BoardModule
   ],

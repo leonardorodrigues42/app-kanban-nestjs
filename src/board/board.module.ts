@@ -1,5 +1,5 @@
 import { AuthModule } from 'src/auth/auth.module';
-import { UsersModule } from 'src/users/users.module';
+import { UserModule } from 'src/users/users.module';
 
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -10,7 +10,7 @@ import { BoardService } from './board.service';
 
 @Module({
   controllers: [BoardController],
-  imports: [UsersModule, TypeOrmModule.forFeature([Board]), AuthModule],
+  imports: [UserModule, TypeOrmModule.forFeature([Board]), AuthModule],
   providers: [BoardService],
   exports: [BoardService, TypeOrmModule]
 })
