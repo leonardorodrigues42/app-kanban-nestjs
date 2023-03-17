@@ -53,7 +53,7 @@ export class UsersService {
   async deleteUser(userId: string, requestUserId: string) {
     const user = await this.getUserOrFail(userId);
     await this.requestUserIsOwner(requestUserId, user);
-    await this.usersRepository.delete(user);
+    await this.usersRepository.remove(user);
     return `Usuário deletado`;
   }
 
@@ -82,6 +82,7 @@ export class UsersService {
 
   private async requestUserIsOwner(userIdForDel: string, user: User) {
     if (user.id !== userIdForDel) {
+      console.log(userIdForDel, user.id);
       throw new UnauthorizedException(
         `Somente o próprio usuário pode realizar essa operação`
       );

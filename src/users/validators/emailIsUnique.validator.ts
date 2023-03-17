@@ -12,10 +12,10 @@ import { UsersService } from '../users.service';
 @Injectable()
 @ValidatorConstraint()
 export class EmailIsUnique implements ValidatorConstraintInterface {
-  constructor(private usersServices: UsersService) {}
+  constructor(private usersService: UsersService) {}
   async validate(value: any): Promise<boolean> {
-    const findUser = await this.usersServices.emailAlreadyExists(value);
-    return !findUser;
+    const findUser = await this.usersService.emailAlreadyExists(value);
+    return !!!findUser;
   }
 }
 

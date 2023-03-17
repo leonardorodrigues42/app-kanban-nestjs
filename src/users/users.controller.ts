@@ -47,7 +47,7 @@ export class UsersController {
   ) {
     const userUpdated = await this.usersService.updateUser(
       id,
-      req.user.id,
+      req.user.sub,
       data
     );
     return {
@@ -62,7 +62,7 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async deleteUser(@Param('id') userId: string, @Request() req) {
-    const response = await this.usersService.deleteUser(userId, req.user.id);
+    const response = await this.usersService.deleteUser(userId, req.user.sub);
     return {
       status: 'ok',
       message: response
