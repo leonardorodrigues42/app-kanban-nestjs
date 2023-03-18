@@ -1,6 +1,13 @@
-import { IsEmail, IsUrl, MaxLength, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsUrl,
+  MaxLength,
+  MinLength
+} from 'class-validator';
 
-import { EmailAlreadyExistsValidator } from '../validators/emailIsUnique.validator';
+import {
+  EmailAlreadyExistsValidator
+} from '../validators/email-is-unique.validator';
 
 export class CreateUserDTO {
   @MinLength(3, { message: 'Nome precisa ter pelo menos 3 caractes' })

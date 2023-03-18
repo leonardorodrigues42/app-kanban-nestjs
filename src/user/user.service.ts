@@ -2,17 +2,17 @@ import { hashSync } from 'bcrypt';
 import { Repository } from 'typeorm';
 
 import {
+  ForbiddenException,
   Injectable,
-  NotFoundException,
-  UnauthorizedException
+  NotFoundException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { CreateUserDTO } from './dto/CreateUser.dto';
-import { User } from './users.entity';
+import { User } from './user.entity';
 
 @Injectable()
-export class UsersService {
+export class UserService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>
@@ -83,7 +83,7 @@ export class UsersService {
   private async requestUserIsOwner(userIdForDel: string, user: User) {
     if (user.id !== userIdForDel) {
       console.log(userIdForDel, user.id);
-      throw new UnauthorizedException(
+      throw new ForbiddenException(
         `Somente o próprio usuário pode realizar essa operação`
       );
     }

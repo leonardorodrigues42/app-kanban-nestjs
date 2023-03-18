@@ -7,14 +7,14 @@ import {
 
 import { Injectable } from '@nestjs/common';
 
-import { UsersService } from '../users.service';
+import { UserService } from '../user.service';
 
 @Injectable()
 @ValidatorConstraint()
 export class EmailIsUnique implements ValidatorConstraintInterface {
-  constructor(private usersService: UsersService) {}
+  constructor(private userService: UserService) {}
   async validate(value: any): Promise<boolean> {
-    const findUser = await this.usersService.emailAlreadyExists(value);
+    const findUser = await this.userService.emailAlreadyExists(value);
     return !!!findUser;
   }
 }

@@ -22,9 +22,11 @@ import { Board } from './board/board.entity';
 import { BoardModule } from './board/board.module';
 import { BoardService } from './board/board.service';
 import { HttpExceptionFilter } from './filters/http-exception-filter';
-import { User } from './users/users.entity';
-import { UserModule } from './users/users.module';
-import { UsersService } from './users/users.service';
+import { List } from './list/list.entity';
+import { ListModule } from './list/list.module';
+import { User } from './user/user.entity';
+import { UserModule } from './user/user.module';
+import { UserService } from './user/user.service';
 
 @Module({
   controllers: [AppController],
@@ -41,17 +43,18 @@ import { UsersService } from './users/users.service';
         database: configService.get<string>('POSTGRES_DB'),
         username: configService.get<string>('POSTGRES_USERNAME'),
         password: configService.get<string>('POSTGRES_PWD'),
-        entities: [User, Board],
+        entities: [User, Board, List],
         synchronize: true
       }),
       inject: [ConfigService]
     }),
     UserModule,
     AuthModule,
-    BoardModule
+    BoardModule,
+    ListModule
   ],
   providers: [
-    UsersService,
+    UserService,
     BoardService,
     AuthService,
     {

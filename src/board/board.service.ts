@@ -1,12 +1,12 @@
 import { UserJwtPayload } from 'src/interfaces/jwt-payload.interface';
-import { UsersService } from 'src/users/users.service';
+import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
-  NotFoundException,
-  UnauthorizedException
+  NotFoundException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -18,7 +18,7 @@ export class BoardService {
   constructor(
     @InjectRepository(Board)
     private boardRepository: Repository<Board>,
-    private userService: UsersService
+    private userService: UserService
   ) {}
 
   async createBoard(
@@ -152,10 +152,25 @@ export class BoardService {
     return board;
   }
 
+  async checkBoardAccess(boardId: string, userId: string) {
+    const user = await this.userService.getUserOrFail(userId);
+    const board = await this.getBoardOrFail(boardId);
+
+    if (
+      board.owner.id !== user.id &&
+      !board.users.find(u => u.id === user.id)
+    ) {
+      throw new ForbiddenException(
+        'Esse usuário não tem acesso a esse quadro.'
+      );
+    }
+    return { user, board };
+  }
+
   private async requestUserIsOwner(userId: string, board: Board) {
     const userRequest = await this.userService.getUserOrFail(userId);
     if (userRequest.id !== board.owner.id) {
-      throw new UnauthorizedException(
+      throw new ForbiddenException(
         `Apenas o dono do Quadro <${board.title}> pode acessar esse recurso`
       );
     }

@@ -1,5 +1,5 @@
 import { AuthModule } from 'src/auth/auth.module';
-import { UserModule } from 'src/users/users.module';
+import { UserModule } from 'src/user/user.module';
 
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
