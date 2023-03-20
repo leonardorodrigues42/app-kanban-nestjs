@@ -1,31 +1,32 @@
-import { Board } from 'src/board/board.entity';
-import { Card } from 'src/card/card.entity';
+import { List } from 'src/list/list.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
 
 @Entity()
-export class List {
+export class Card {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
-  name: string;
+  title: string;
 
   @Column()
-  position: number;
+  description: string;
 
-  @ManyToOne(() => Board, board => board.lists)
-  board: Board;
+  @Column()
+  initDate: string;
 
-  @OneToMany(() => Card, card => card.list)
-  cards: Card[];
+  @Column()
+  endDate: string;
+
+  @ManyToOne(() => List, list => list.cards)
+  list: List;
 
   @CreateDateColumn()
   createdAt: Date;

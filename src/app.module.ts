@@ -21,6 +21,8 @@ import { AuthService } from './auth/auth.service';
 import { Board } from './board/board.entity';
 import { BoardModule } from './board/board.module';
 import { BoardService } from './board/board.service';
+import { Card } from './card/card.entity';
+import { CardModule } from './card/card.module';
 import { HttpExceptionFilter } from './filters/http-exception-filter';
 import { List } from './list/list.entity';
 import { ListModule } from './list/list.module';
@@ -43,7 +45,7 @@ import { UserService } from './user/user.service';
         database: configService.get<string>('POSTGRES_DB'),
         username: configService.get<string>('POSTGRES_USERNAME'),
         password: configService.get<string>('POSTGRES_PWD'),
-        entities: [User, Board, List],
+        entities: [User, Board, List, Card],
         synchronize: true
       }),
       inject: [ConfigService]
@@ -51,7 +53,8 @@ import { UserService } from './user/user.service';
     UserModule,
     AuthModule,
     BoardModule,
-    ListModule
+    ListModule,
+    CardModule
   ],
   providers: [
     UserService,

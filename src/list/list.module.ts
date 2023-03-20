@@ -11,13 +11,13 @@ import { ListService } from './list.service';
 import { NameIsUnique } from './validators/list-already-exists.validator';
 
 @Module({
+  controllers: [ListController],
   imports: [
     TypeOrmModule.forFeature([List]),
     AuthModule,
     BoardModule,
     UserModule
   ],
-  controllers: [ListController],
   providers: [ListService, NameIsUnique],
   exports: [ListService, TypeOrmModule]
 })

@@ -152,6 +152,13 @@ export class BoardService {
     return board;
   }
 
+  async getBoardByListId(listId: string) {
+    const board = await this.boardRepository.findOne({
+      where: { lists: { id: listId } }
+    });
+    return board;
+  }
+
   async checkBoardAccess(boardId: string, userId: string) {
     const user = await this.userService.getUserOrFail(userId);
     const board = await this.getBoardOrFail(boardId);
