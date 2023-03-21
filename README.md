@@ -24,7 +24,7 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Aplicação backend para servir quadros kanban e auxiliar na organização de tarefas dos usuários.
 
 ## Instruções para uso
 Antes de executar o projeto, certifique-se de preencher as informações de configuração do banco de dados no arquivo .env, seguindo o modelo fornecido no arquivo .env.example.
