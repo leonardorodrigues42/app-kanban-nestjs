@@ -11,14 +11,23 @@ import {
   Request,
   UseGuards
 } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiNotFoundResponse,
+  ApiResponse,
+  ApiTags
+} from '@nestjs/swagger';
 
 import { BoardService } from './board.service';
 import { CreateBoardDTO } from './dto/CreateBoard.dto';
 
+@ApiTags('boards')
 @Controller('boards')
 export class BoardController {
   constructor(private boardService: BoardService) {}
 
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Post()
   async createBoard(@Body() data: CreateBoardDTO, @Request() req: any) {
@@ -27,17 +36,33 @@ export class BoardController {
   }
 
   @Get()
+  @ApiResponse({ description: 'Retorna uma lista com todos os Quadros' })
   async listBoards() {
     return await this.boardService.listBoards();
   }
 
   @Get(':id')
+  @ApiNotFoundResponse({ description: 'Quadro não encontrado' })
+  @ApiResponse({ description: 'Retorna uma lista com todos os quadros' })
   async getBoard(@Param('id') id: string) {
     return await this.boardService.getBoard(id);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post(':id/users')
+  @ApiResponse({
+    description:
+      'Retorna os usuários adicionado quadro e aqueles' +
+      'que não foram adicionados por algum motivo'
+  })
+  @ApiBody({
+    schema: {
+      example: {
+        emailList:
+          '[user1@example.com, user2@mail.com, ...] ou "user1@example.com"'
+      }
+    }
+  })
   async addUserInBoard(
     @Body('emailList') emailList: string[] | string,
     @Param('id') id: string,
@@ -56,6 +81,17 @@ export class BoardController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
+  @ApiBody({
+    schema: {
+      example: {
+        title: '?newtitle',
+        backgroundImageUrl: 'https://newbackgroundimg.com'
+      }
+    }
+  })
+  @ApiResponse({
+    description: 'Atualiza o quadro do id correspondente'
+  })
   async updateBoard(
     @Param('id') id: string,
     @Body() data: Partial<CreateBoardDTO>,
@@ -77,6 +113,19 @@ export class BoardController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id/users')
+  @ApiResponse({
+    description:
+      'Remove os usuários adicionado quadro e aqueles' +
+      'que não foram removidos por algum motivo'
+  })
+  @ApiBody({
+    schema: {
+      example: {
+        emailList:
+          '[user1@example.com, user2@mail.com, ...] ou "user1@example.com"'
+      }
+    }
+  })
   async removeUserOfBoard(
     @Body('emailList') emailList: string[] | string,
     @Param('id') id: string,
@@ -95,6 +144,9 @@ export class BoardController {
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
+  @ApiResponse({
+    description: 'Deleta o quadro do id correspondente'
+  })
   async deleteBoard(@Param('id') id: string, @Request() req: any) {
     const response = await this.boardService.deleteBoard(id, req.user.sub);
     return {
