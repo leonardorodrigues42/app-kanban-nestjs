@@ -26,6 +26,11 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Instruções para uso
+Antes de executar o projeto, certifique-se de preencher as informações de configuração do banco de dados no arquivo .env, seguindo o modelo fornecido no arquivo .env.example.
+
+A documentação da API estará disponível na rota http://localhost:3000/api. Para obter informações sobre como utilizar as rotas, consulte a documentação.
+
 ## Installation
 
 ```bash
